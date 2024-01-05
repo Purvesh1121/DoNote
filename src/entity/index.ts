@@ -1,4 +1,5 @@
-import { Note } from "./note";
-import { User } from "./user";
+import { Note } from "./Note";
+import { Share } from "./Share";
+import { User } from "./User";
 
-export const Models = [User, Note];
+export const Models = [User, Note, Share];
