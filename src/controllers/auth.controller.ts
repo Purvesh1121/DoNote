@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import LoggerModule from "../loaders/logger";
-import { DEFAULT_MESSAGES } from "../utils/constants";
+import { DEFAULT_MESSAGES, HTTP_CODES } from "../utils/constants";
 import * as authService from "../services/auth.service";
-import { IResult } from "../types/common";
+import { sendResponse } from "../utils/response";
 
 const Logger = LoggerModule("Auth_Controller");
 
@@ -17,12 +17,13 @@ export const signup = async (req: Request, res: Response) => {
     };
 
     const result = await authService.signup(data);
-    const { status, ...rest } = result;
-    return res.status(status).json(rest);
+    return sendResponse(res, HTTP_CODES.CREATED, result);
   } catch (error) {
     Logger.error(error);
-    const message = error?.message || DEFAULT_MESSAGES.INTERNAL_ERR;
-    res.status(500).json({ message });
+    return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, {
+      success: false,
+      message: error?.message || DEFAULT_MESSAGES.INTERNAL_ERR,
+    });
   }
 };
 
@@ -31,7 +32,9 @@ export const login = async (req: Request, res: Response) => {
     // TODO: Add validations here
   } catch (error) {
     Logger.error(error);
-    const message = error?.message || DEFAULT_MESSAGES.INTERNAL_ERR;
-    res.status(500).json({ message });
+    return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, {
+      success: false,
+      message: error?.message || DEFAULT_MESSAGES.INTERNAL_ERR,
+    });
   }
 };

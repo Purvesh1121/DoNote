@@ -19,7 +19,7 @@ export class User {
   @Column()
   password: string;
 
-  @OneToMany(() => Note, (note) => note.author)
+  @OneToMany(() => Note, (note) => note.user)
   notes: Note[];
 
   // Notes shared to the user

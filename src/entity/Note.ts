@@ -4,7 +4,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./User";
@@ -22,11 +21,11 @@ export class Note {
   content: string;
 
   @Column()
-  authorId: number;
+  userId: number; // Id of user who has created the note
 
   @ManyToOne(() => User, (user) => user.notes)
-  @JoinColumn({ name: "authorId" })
-  author: User;
+  @JoinColumn({ name: "userId" })
+  user: User;
 
   @OneToMany(() => Share, (share) => share.note)
   shares: Share[];

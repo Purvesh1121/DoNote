@@ -6,22 +6,22 @@ interface ApiResponse {
   success: boolean;
 }
 
-export function createResponse(
+export const createResponse = (
   success: boolean,
   message: string,
   data?: any
-): ApiResponse {
+): ApiResponse => {
   return {
     data: success ? data : undefined,
     message,
     success,
   };
-}
+};
 
 export const sendResponse = (
   res: Response,
-  apiResponse: ApiResponse,
-  status: number = 200
+  status: number,
+  apiResponse: ApiResponse
 ): Response => {
   return res.status(status).json(apiResponse);
 };

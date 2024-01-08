@@ -5,6 +5,7 @@ import { DatabaseSource } from "../loaders/database";
 import { User } from "../entity/User";
 import { DEFAULT_MESSAGES } from "../utils/constants";
 import { IResult } from "../types/common";
+import { createResponse } from "../utils/response";
 const { jwtSecret, jwtExpiresIn, saltRounds } = config;
 
 // repositories
@@ -21,14 +22,7 @@ export const signup = async (signupData: ICreateUser) => {
   user.password = hash;
 
   const savedUser = await userRepository.save(user);
-
-  const result: IResult = {
-    status: 201,
-    data: user,
-    message: DEFAULT_MESSAGES.SUCCESSFUL,
-    success: true,
-  };
-  return result;
+  return createResponse(true, DEFAULT_MESSAGES.SUCCESSFUL, savedUser);
 };
 
 export const login = async (loginData: any) => {};

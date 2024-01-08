@@ -19,7 +19,7 @@ export class Share {
   noteId: number;
 
   @ManyToOne(() => User, (user) => user.sharedNotes)
-  @JoinColumn({ name: "toUserId" })
+  @JoinColumn({ name: "userId" })
   user: User;
 
   @ManyToOne(() => Note, (note) => note.shares)
