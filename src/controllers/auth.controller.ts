@@ -30,6 +30,24 @@ export const signup = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     // TODO: Add validations here
+    const data = {
+      email: req?.body?.email,
+      password: req?.body?.password,
+    };
+
+    const result = await authService.login(data);
+    if (result.success) {
+      return sendResponse(res, HTTP_CODES.OK, result);
+    } else if (result.message === DEFAULT_MESSAGES.USER_NOT_FOUND) {
+      return sendResponse(res, HTTP_CODES.NOT_FOUND, result);
+    } else if (result.message === DEFAULT_MESSAGES.INVALID_CREDENTIALS) {
+      return sendResponse(res, HTTP_CODES.UNAUTHORIZED, result);
+    } else {
+      return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, {
+        success: false,
+        message: DEFAULT_MESSAGES.INTERNAL_ERR,
+      });
+    }
   } catch (error) {
     Logger.error(error);
     return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, {
