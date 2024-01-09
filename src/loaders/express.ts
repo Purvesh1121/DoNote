@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import config from "../config";
 import routes from "../routes";
+import { DEFAULT_MESSAGES } from "../utils/constants";
 
 const app = express();
 app.use(cors());
@@ -14,7 +15,7 @@ app.use(config.api.prefix || "/api", routes);
 
 // Middleware function to handle 404 errors
 const handleNotFound = (req: Request, res: Response, next: NextFunction) => {
-  res.status(404).json({ message: "route not found" });
+  res.status(404).json({ message: DEFAULT_MESSAGES.NOT_FOUND });
 };
 
 // catch 404 and forward to error handler

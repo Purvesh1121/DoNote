@@ -13,18 +13,16 @@ export class User {
   @Column()
   lastname: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @OneToMany(() => Note, (note) => note.author)
+  @OneToMany(() => Note, (note) => note.user)
   notes: Note[];
 
-  @OneToMany(() => Share, (share) => share.fromUser)
+  // Notes shared to the user
+  @OneToMany(() => Share, (share) => share.user)
   sharedNotes: Share[];
-
-  @OneToMany(() => Share, (share) => share.toUser)
-  receivedNotes: Share[];
 }

@@ -24,4 +24,6 @@ export const DEFAULT_MESSAGES = {
   DATA_NOT_UPDATED: "Data was not updated",
   UNAUTHORIZED: "Unauthorized",
   ACCESS_TOKEN_REQUIRED: "Access token required",
+  USER_NOT_FOUND: "User not found",
+  INVALID_CREDENTIALS: "Invalid credentials",
 };
