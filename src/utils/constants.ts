@@ -26,4 +26,5 @@ export const DEFAULT_MESSAGES = {
   ACCESS_TOKEN_REQUIRED: "Access token required",
   USER_NOT_FOUND: "User not found",
   INVALID_CREDENTIALS: "Invalid credentials",
+  DATA_CREATED_SUCCESSFULLY: "Data Created Successfully",
 };
