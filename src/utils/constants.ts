@@ -27,4 +27,6 @@ export const DEFAULT_MESSAGES = {
   USER_NOT_FOUND: "User not found",
   INVALID_CREDENTIALS: "Invalid credentials",
   DATA_CREATED_SUCCESSFULLY: "Data Created Successfully",
+  DATA_NOT_DELETED: "Data was not deleted",
+  NOTE_DELETD_SUCCESSFULLY: "Note Deleted Successfully"
 };

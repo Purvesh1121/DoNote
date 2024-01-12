@@ -108,3 +108,23 @@ export const updateNoteById = async (data: IUpdateNoteById) => {
     );
   }
 };
+
+export const deleteNoteById = async (userId: number, noteId: number) => {
+  try {
+    // Delete the note with userId and noteId
+    const deletedNoteStatus = await noteRepository.delete({ userId, noteId });
+    if (deletedNoteStatus?.affected === 0) {
+      Logger.error(
+        `Unable to update note with noteId=${noteId} and userId=${userId}`
+      );
+      return createResponse(false, DEFAULT_MESSAGES.DATA_NOT_DELETED);
+    }
+    return createResponse(true, DEFAULT_MESSAGES.NOTE_DELETD_SUCCESSFULLY);
+  } catch (error) {
+    Logger.error(error);
+    return createResponse(
+      false,
+      error?.message || DEFAULT_MESSAGES.INTERNAL_ERR
+    );
+  }
+};

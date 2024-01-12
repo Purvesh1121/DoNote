@@ -109,3 +109,28 @@ export const updateNoteById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const deleteNoteById = async (req: Request, res: Response) => {
+  try {
+    // TODO: Add validations here
+    const data = {
+      noteId: +req?.params?.noteId,
+      userId: res?.locals?.userId,
+    };
+
+    const result = await noteService.deleteNoteById(data?.userId, data?.noteId);
+    if (result?.success) {
+      return sendResponse(res, HTTP_CODES.OK, result);
+    } else if (result?.message === DEFAULT_MESSAGES.DATA_NOT_DELETED) {
+      return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, result);
+    } else {
+      throw new Error(result?.message);
+    }
+  } catch (error) {
+    Logger.error(error);
+    return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, {
+      success: false,
+      message: error?.message || DEFAULT_MESSAGES.INTERNAL_ERR,
+    });
+  }
+};
