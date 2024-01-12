@@ -2,7 +2,7 @@ import { Note } from "../entity/Note";
 import { User } from "../entity/User";
 import { DatabaseSource } from "../loaders/database";
 import LoggerModule from "../loaders/logger";
-import { ICreateNote } from "../types/note";
+import { ICreateNote, IUpdateNoteById } from "../types/note";
 import { DEFAULT_MESSAGES } from "../utils/constants";
 import { createResponse } from "../utils/response";
 
@@ -67,6 +67,39 @@ export const getNoteById = async (userId: number, noteId: number) => {
       return createResponse(false, DEFAULT_MESSAGES.NOT_FOUND);
     }
     return createResponse(true, DEFAULT_MESSAGES.SUCCESSFUL, note);
+  } catch (error) {
+    Logger.error(error);
+    return createResponse(
+      false,
+      error?.message || DEFAULT_MESSAGES.INTERNAL_ERR
+    );
+  }
+};
+
+export const updateNoteById = async (data: IUpdateNoteById) => {
+  try {
+    // check if noteId belongs to the user
+    Logger.info("Updating Note...");
+    const { userId, noteId, ...dataToUpdate } = data;
+    const existingNote = await noteRepository.findOneBy({ userId, noteId });
+    if (!existingNote) {
+      Logger.error(`Note with noteId=${noteId} and userId=${userId} not found`);
+      return createResponse(false, DEFAULT_MESSAGES.NOT_FOUND);
+    }
+
+    // update note data
+    const updateNoteStatus = await noteRepository.update(
+      { userId, noteId },
+      dataToUpdate
+    );
+
+    if (updateNoteStatus?.affected === 0) {
+      Logger.info(`Note not updated`);
+      return createResponse(false, DEFAULT_MESSAGES.DATA_NOT_UPDATED);
+    }
+
+    Logger.info(`Note Updated Successfully`);
+    return createResponse(true, DEFAULT_MESSAGES.DATA_UPDATED_SUCCESSFULLY);
   } catch (error) {
     Logger.error(error);
     return createResponse(

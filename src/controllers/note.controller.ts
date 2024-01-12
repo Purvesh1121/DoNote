@@ -78,3 +78,34 @@ export const getNoteById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updateNoteById = async (req: Request, res: Response) => {
+  try {
+    // TODO: Add validations here
+    const data = {
+      noteId: +req?.params?.noteId,
+      userId: res?.locals?.userId,
+      title: req?.body?.title,
+      content: req?.body?.content,
+    };
+
+    const result = await noteService.updateNoteById(data);
+    if (result.success) {
+      // Note update successfully
+      return sendResponse(res, HTTP_CODES.OK, result);
+    } else if (result.message === DEFAULT_MESSAGES.NOT_FOUND) {
+      // Note not found
+      return sendResponse(res, HTTP_CODES.NOT_FOUND, result);
+    } else if (result.message === DEFAULT_MESSAGES.DATA_NOT_UPDATED) {
+      return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, result);
+    } else {
+      throw new Error(result?.message);
+    }
+  } catch (error) {
+    Logger.error(error);
+    return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, {
+      success: false,
+      message: error?.message || DEFAULT_MESSAGES.INTERNAL_ERR,
+    });
+  }
+};
