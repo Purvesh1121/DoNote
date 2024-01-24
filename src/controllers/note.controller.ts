@@ -134,3 +134,31 @@ export const deleteNoteById = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const shareNote = async (req: Request, res: Response) => {
+  try {
+    // TODO: Add validations here
+    const data = {
+      noteId: +req?.params?.noteId,
+      fromUserId: +res?.locals?.userId,
+      toUserId: req?.body?.userId,
+    };
+
+    const result = await noteService.shareNote(
+      data?.noteId,
+      data?.fromUserId,
+      data?.toUserId
+    );
+    if (result.success) {
+      return sendResponse(res, HTTP_CODES.CREATED, result);
+    } else {
+      throw new Error(result?.message);
+    }
+  } catch (error) {
+    Logger.error(error);
+    return sendResponse(res, HTTP_CODES.INTERNAL_SERVER_ERROR, {
+      success: false,
+      message: error?.message || DEFAULT_MESSAGES.INTERNAL_ERR,
+    });
+  }
+};

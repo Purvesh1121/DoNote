@@ -1,4 +1,5 @@
 import { Note } from "../entity/Note";
+import { Share } from "../entity/Share";
 import { User } from "../entity/User";
 import { DatabaseSource } from "../loaders/database";
 import LoggerModule from "../loaders/logger";
@@ -10,6 +11,7 @@ const Logger = LoggerModule("Note_Service");
 
 const userRepository = DatabaseSource.getRepository(User);
 const noteRepository = DatabaseSource.getRepository(Note);
+const shareRepository = DatabaseSource.getRepository(Share);
 
 export const createNote = async (noteData: ICreateNote) => {
   try {
@@ -120,6 +122,36 @@ export const deleteNoteById = async (userId: number, noteId: number) => {
       return createResponse(false, DEFAULT_MESSAGES.DATA_NOT_DELETED);
     }
     return createResponse(true, DEFAULT_MESSAGES.NOTE_DELETD_SUCCESSFULLY);
+  } catch (error) {
+    Logger.error(error);
+    return createResponse(
+      false,
+      error?.message || DEFAULT_MESSAGES.INTERNAL_ERR
+    );
+  }
+};
+
+export const shareNote = async (
+  noteId: number,
+  fromUserId: number,
+  toUserId: number
+) => {
+  try {
+    // Check if the note is actually owned by user
+    const note = await noteRepository.findOneBy({ userId: fromUserId, noteId });
+    if (!note) {
+      Logger.error(
+        `No note found for userId=${fromUserId} and noteId=${noteId}`
+      );
+      return createResponse(false, "Something went wrong");
+    }
+
+    const share = new Share();
+    share.userId = toUserId;
+    share.noteId = noteId;
+
+    const savedShare = await shareRepository.save(share);
+    return createResponse(true, DEFAULT_MESSAGES.SUCCESSFUL, savedShare);
   } catch (error) {
     Logger.error(error);
     return createResponse(
